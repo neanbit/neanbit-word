@@ -1,0 +1,56 @@
+/**
+ * Modo Fechas — años de la historia argentina (4 dígitos).
+ * Demuestra que el motor no depende de letras: el alfabeto es numérico.
+ */
+const HECHOS = [
+  ['1536', 'Pedro de Mendoza funda por primera vez Buenos Aires.'],
+  ['1580', 'Juan de Garay refunda Buenos Aires.'],
+  ['1776', 'Se crea el Virreinato del Río de la Plata.'],
+  ['1810', 'Revolución de Mayo.'],
+  ['1812', 'Batalla de Tucumán.'],
+  ['1816', 'Se declara la Independencia en el Congreso de Tucumán.'],
+  ['1817', 'San Martín cruza los Andes con el Ejército Libertador.'],
+  ['1850', 'Muere José de San Martín en Francia.'],
+  ['1852', 'Batalla de Caseros, cae Rosas.'],
+  ['1853', 'Se sanciona la Constitución Nacional.'],
+  ['1882', 'Se funda la ciudad de La Plata.'],
+  ['1893', 'Se funda la Asociación del Fútbol Argentino (AFA).'],
+  ['1901', 'Se funda el Club Atlético River Plate.'],
+  ['1905', 'Se funda el Club Atlético Boca Juniors.'],
+  ['1912', 'Ley Sáenz Peña: voto secreto y obligatorio.'],
+  ['1913', 'Se inaugura la primera línea del subte porteño (la A).'],
+  ['1918', 'Reforma Universitaria en Córdoba.'],
+  ['1930', 'Primer golpe de Estado del siglo XX, contra Yrigoyen.'],
+  ['1936', 'Se inaugura el Obelisco de Buenos Aires.'],
+  ['1946', 'Perón asume su primera presidencia.'],
+  ['1947', 'Se sanciona el voto femenino; Houssay recibe el Nobel de Medicina.'],
+  ['1952', 'Muere Eva Perón.'],
+  ['1955', 'Golpe de la "Revolución Libertadora" contra Perón.'],
+  ['1969', 'Estalla el Cordobazo.'],
+  ['1976', 'Comienza la última dictadura cívico-militar.'],
+  ['1978', 'Argentina gana su primer Mundial de fútbol.'],
+  ['1980', 'Pérez Esquivel recibe el Premio Nobel de la Paz.'],
+  ['1982', 'Guerra de Malvinas.'],
+  ['1983', 'Vuelve la democracia: asume Raúl Alfonsín.'],
+  ['1984', 'César Milstein recibe el Nobel de Medicina.'],
+  ['1985', 'Juicio a las Juntas Militares.'],
+  ['1986', 'Argentina gana su segundo Mundial, en México.'],
+  ['1994', 'Reforma de la Constitución Nacional.'],
+  ['2001', 'Crisis económica y política de diciembre.'],
+  ['2013', 'Jorge Bergoglio es elegido Papa Francisco.'],
+  ['2021', 'La Selección gana la Copa América en el Maracaná.'],
+  ['2022', 'Argentina gana su tercera Copa del Mundo, en Qatar.'],
+];
+
+export default {
+  id: 'fechas',
+  nombre: 'Fechas',
+  seccion: 'Historia',
+  descripcion: 'Adiviná el año de un hecho argentino. Cuatro dígitos.',
+  acento: '#a77be6',
+  teclado: 'numeros',
+  intentos: 6,
+  respuestas: HECHOS.map(([palabra, pista]) => ({ palabra, pista })),
+  // No hay "diccionario" de años: aceptamos cualquier año razonable.
+  validacion: { tipo: 'rango', min: 1000, max: 2100 },
+};

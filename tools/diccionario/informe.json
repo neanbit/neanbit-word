@@ -1,0 +1,29 @@
+{
+  "variante": "rioplatense",
+  "fuentes_hunspell": [
+    "es_AR",
+    "es_ES"
+  ],
+  "formas_expandidas_hunspell": 26433,
+  "formas_leidas_kaikki": 38914,
+  "formas_5_unicas": 12649,
+  "soluciones": 2000,
+  "validas": 12649,
+  "umbral_zipf": 2.0,
+  "umbral_verbal_zipf": 4.8,
+  "umbral_forma_zipf": 4.0,
+  "tope_soluciones": 2000,
+  "descartes": {
+    "femenino_trivial": 418,
+    "flexion_poco_frecuente": 927,
+    "forma_verbal_rara": 4185,
+    "nombre_propio": 314,
+    "plural_trivial": 977,
+    "poco_frecuente": 1707,
+    "sin_atestiguar_en_wiktionary": 1328,
+    "solo_formas_marcadas": 392,
+    "termino_de_nicho": 25
+  },
+  "zipf_solucion_min": 2.28,
+  "zipf_solucion_max": 6.19
+}

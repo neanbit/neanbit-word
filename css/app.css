@@ -1,0 +1,817 @@
+/* ==========================================================================
+   neanbit · palabras
+   Orden: tokens · base · cabecera · navegación · inicio · juego · teclado ·
+          modales · controles · movimiento
+   ========================================================================== */
+
+/* ---------- Tokens ---------- */
+:root {
+  --fondo: #f4f6fa;
+  --superficie: #ffffff;
+  --superficie-2: #e9edf5;
+  --texto: #0e1a38;
+  --texto-suave: #5a6684;
+  --tinta-marca: #14213d;      /* wordmark del encabezado (tinta oscura) */
+  --linea: #d6dce9;
+  --borde-ficha: #cfd6e4;
+  --borde-escrita: #7c88a6;
+  --fondo-ficha: #ffffff;      /* relleno de las casillas del tablero */
+  --sombra-tecla: rgba(14, 26, 56, .16);
+
+  --correcta: #1f9d6a;
+  --presente: #f5a524;
+  --ausente: #6a7390;
+  --sobre-correcta: #ffffff;
+  --sobre-presente: #2a1c00;
+  --sobre-ausente: #ffffff;
+
+  --ambar: #f5a524;
+  --acento: #6c8cff;           /* lo define cada juego desde JS */
+  --sombra: 0 12px 40px rgba(14, 26, 56, .18);
+  --velo: rgba(14, 26, 56, .32);   /* fondo detrás del menú desplegable */
+
+  --fuente: 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+}
+
+:root[data-tema='oscuro'] {
+  --fondo: #0a1022;
+  --superficie: #121a33;
+  --superficie-2: #1b2544;
+  --texto: #eef1f8;
+  --texto-suave: #98a3c2;
+  --tinta-marca: #f1f5f9;      /* wordmark del encabezado (tinta clara) */
+  --linea: #263052;
+  --borde-ficha: #2f3a5e;
+  --borde-escrita: #66739b;
+  --fondo-ficha: #16203c;
+  --sombra-tecla: rgba(0, 0, 0, .5);
+  --correcta: #23a873;
+  --ausente: #333e63;
+  --sombra: 0 12px 40px rgba(0, 0, 0, .55);
+  --velo: rgba(3, 6, 16, .6);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-tema='auto'] {
+    --fondo: #0a1022;
+    --superficie: #121a33;
+    --superficie-2: #1b2544;
+    --texto: #eef1f8;
+    --texto-suave: #98a3c2;
+    --tinta-marca: #f1f5f9;      /* auto en sistema oscuro */
+    --linea: #263052;
+    --borde-ficha: #2f3a5e;
+    --borde-escrita: #66739b;
+    --fondo-ficha: #16203c;
+    --sombra-tecla: rgba(0, 0, 0, .5);
+    --correcta: #23a873;
+    --ausente: #333e63;
+    --sombra: 0 12px 40px rgba(0, 0, 0, .55);
+    --velo: rgba(3, 6, 16, .6);
+    color-scheme: dark;
+  }
+}
+
+/* Alto contraste: naranja = correcta, azul = presente */
+:root[data-contraste='true'] {
+  --correcta: #ee6a1f;
+  --presente: #3b82f6;
+  --sobre-correcta: #ffffff;
+  --sobre-presente: #ffffff;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  color: var(--texto);
+  background: var(--fondo);
+  font-family: var(--fuente);
+  font-size: 16px;
+  line-height: 1.45;
+  font-feature-settings: 'tnum' 1;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { font: inherit; color: inherit; }
+a { color: inherit; }
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
+
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+.app {
+  width: 100%;
+  max-width: 520px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 0 16px max(14px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+/* ---------- Cabecera ---------- */
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  margin: 0 -16px;
+  padding: env(safe-area-inset-top) 12px 0 16px;
+  box-sizing: content-box;
+  border-bottom: 1px solid var(--linea);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 6px;
+}
+/* La marca del encabezado es un solo SVG en línea: las letras toman
+   `--tinta-marca` y el cuadradito queda en el ámbar de la marca. Al ser un solo
+   elemento no hay forma de que se vean las dos tintas a la vez (con dos <img>
+   y CSS viejo, la página llegaba a mostrar los dos wordmarks). */
+.marca__logo { display: block; height: 22px; width: auto; color: var(--tinta-marca); }
+
+.acciones { display: flex; gap: 2px; }
+.icono {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.icono:hover { background: var(--superficie-2); }
+.icono svg, .modal__cerrar svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Menú de juegos ----------
+   Antes era una barra fija debajo de la cabecera. Ahora es un panel que baja del
+   botón de la izquierda: el botón muta a X, el velo oscurece el fondo y los
+   ítems entran escalonados. Cerrado queda invisible e `inert` (no recibe foco). */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s linear .26s;
+}
+.menu[data-abierto='true'] {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* El velo arranca debajo de la cabecera: la marca y los iconos quedan nítidos. */
+.menu__fondo {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 56px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: auto;
+  background: var(--velo);
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+.menu[data-abierto='true'] .menu__fondo { opacity: 1; }
+
+.menu__panel {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 62px);
+  left: max(16px, calc(50vw - 260px + 16px));
+  width: min(316px, calc(100vw - 32px));
+  max-height: calc(100dvh - env(safe-area-inset-top) - 78px);
+  overflow-y: auto;
+  pointer-events: auto;
+  padding: 8px;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  box-shadow: var(--sombra);
+  transform-origin: top left;
+  opacity: 0;
+  transform: translateY(-8px) scale(.96);
+  transition: opacity .18s ease, transform .24s cubic-bezier(.2, .9, .3, 1);
+}
+/* Pestañita que señala el botón que abrió el panel. */
+.menu__panel::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 14px;
+  width: 11px;
+  height: 11px;
+  background: var(--superficie);
+  border-top: 1px solid var(--linea);
+  border-left: 1px solid var(--linea);
+  border-radius: 2px 0 0 0;
+  transform: rotate(45deg);
+}
+.menu[data-abierto='true'] .menu__panel { opacity: 1; transform: none; }
+
+/* En pantallas chicas el menú ocupa la ventana: se frena el scroll del fondo. */
+@media (max-width: 959px) {
+  html:has(.menu[data-abierto='true']) { overflow: hidden; }
+}
+
+.menu__rotulo {
+  padding: 8px 12px 6px;
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.menu__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 72px;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 12px;
+  color: var(--texto);
+  text-decoration: none;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity .2s ease var(--retraso, 0ms),
+    transform .24s cubic-bezier(.2, .9, .3, 1) var(--retraso, 0ms),
+    background-color .15s;
+}
+.menu[data-abierto='true'] .menu__item { opacity: 1; transform: none; }
+.menu__item:hover { background: var(--superficie-2); }
+.menu__item[aria-current='page'] { background: var(--superficie-2); }
+.menu__item[aria-current='page'] .menu__nombre { font-weight: 700; }
+.menu__item[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--acento);
+}
+
+.menu__icono { display: grid; place-items: center; width: 26px; height: 26px; color: var(--texto-suave); }
+.menu__icono svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.menu__texto { display: grid; gap: 1px; min-width: 0; }
+.menu__nombre { font-size: .95rem; font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+.menu__nota { overflow: hidden; font-size: .74rem; color: var(--texto-suave); text-overflow: ellipsis; white-space: nowrap; }
+.menu__estado { font-size: .7rem; font-weight: 600; text-align: right; white-space: nowrap; color: var(--texto-suave); }
+.menu__estado[data-estado='jugando'] { color: var(--presente); }
+.menu__estado[data-estado='ganada'] { color: var(--correcta); }
+
+/* El botón del menú: tres barras que se cruzan en X al abrir. */
+.cabecera__izq { display: flex; align-items: center; gap: 2px; margin-left: -6px; }
+.icono--menu svg path { transform-box: fill-box; transform-origin: center; transition: transform .2s ease, opacity .15s ease; }
+.icono--menu[aria-expanded='true'] { background: var(--superficie-2); }
+.icono--menu[aria-expanded='true'] .icono__barra:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.icono--menu[aria-expanded='true'] .icono__barra:nth-child(2) { opacity: 0; }
+.icono--menu[aria-expanded='true'] .icono__barra:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* Cuadradito de estado: el mismo bloque del logo */
+.bit {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  border: 1.5px solid var(--borde-escrita);
+  transition: background .2s, border-color .2s;
+}
+.bit[data-estado='jugando'] { border-color: var(--presente); background: linear-gradient(135deg, var(--presente) 50%, transparent 50%); }
+.bit[data-estado='ganada'] { border-color: var(--correcta); background: var(--correcta); }
+.bit[data-estado='perdida'] { border-color: var(--ausente); background: var(--ausente); }
+
+/* ---------- Inicio ---------- */
+.inicio { padding: 22px 0 8px; }
+.inicio__fecha {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.inicio h1 { margin-top: 2px; font-size: 2rem; font-weight: 700; letter-spacing: -.035em; line-height: 1.15; }
+
+.progreso { display: flex; align-items: center; gap: 12px; margin-top: 14px; font-size: .9rem; font-weight: 500; }
+.bits { display: flex; gap: 5px; }
+.bits i { width: 16px; height: 16px; border-radius: 4px; background: var(--superficie-2); transition: background .3s; }
+.bits i[data-hecho='true'] { background: var(--ambar); }
+.constancia { margin-top: 6px; min-height: 1.3em; font-size: .86rem; color: var(--texto-suave); }
+
+.tarjetas { display: grid; gap: 10px; margin-top: 20px; }
+
+.tarjeta {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 16px;
+  padding: 16px 18px 16px 22px;
+  overflow: hidden;
+  text-decoration: none;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.tarjeta::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: var(--acento);
+}
+.tarjeta:hover { transform: translateY(-2px); border-color: var(--acento); box-shadow: var(--sombra); }
+.tarjeta__tema { grid-column: 1; font-size: .7rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-suave); }
+.tarjeta__nombre { grid-column: 1; font-size: 1.25rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; }
+.tarjeta__desc { grid-column: 1; font-size: .86rem; color: var(--texto-suave); }
+.tarjeta__estado { grid-column: 1; margin-top: 6px; font-size: .84rem; font-weight: 600; }
+.tarjeta__estado[data-estado='ganada'] { color: var(--correcta); }
+.tarjeta__lado { grid-column: 2; grid-row: 1 / span 4; display: grid; justify-items: end; align-content: center; }
+.tarjeta__ir {
+  display: grid; place-items: center;
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  color: var(--texto);
+  background: var(--superficie-2);
+  transition: background .15s, color .15s;
+}
+.tarjeta:hover .tarjeta__ir { background: var(--acento); color: #fff; }
+.tarjeta__ir svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.mini { display: grid; gap: 2px; }
+.mini div { display: flex; gap: 2px; justify-content: flex-end; }
+.mini i { width: 9px; height: 9px; border-radius: 2px; background: var(--ausente); }
+.mini i[data-e='correcta'] { background: var(--correcta); }
+.mini i[data-e='presente'] { background: var(--presente); }
+
+.subtitulo { margin: 30px 0 10px; font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--texto-suave); }
+.proximas { list-style: none; display: grid; gap: 0; border-top: 1px solid var(--linea); }
+.proximas li { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--linea); font-size: .88rem; }
+.proximas b { font-weight: 600; white-space: nowrap; }
+.proximas span { color: var(--texto-suave); text-align: right; }
+
+/* ---------- Juego ---------- */
+/* Una sola columna: barra, pista, tablero y teclado, centrados y en ese orden.
+   La pista y el teclado llevan `margin: auto` para que el bloque quede centrado
+   en el alto de la ventana sin separar el tablero del teclado. */
+.juego { flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; min-height: 0; }
+
+.barra {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0 4px;
+}
+.barra h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; }
+.barra p { font-size: .76rem; font-weight: 500; color: var(--texto-suave); }
+
+.pista {
+  width: 100%;
+  min-height: 3em;
+  margin-top: auto;
+  padding: 4px 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: .94rem;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.pista b {
+  display: block;
+  font-size: .64rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+/* Sin enunciado no queda bloque de pista: el `margin-top: auto` del tablero
+   reparte el alto libre igual que antes y el tablero sube. */
+.juego[data-sin-pista='true'] .tablero { margin-top: auto; }
+
+/* ---------- Tablero ---------- */
+/* Las casillas del tablero son el elemento grande de la pantalla: rellenas y con
+   esquinas amplias, para que no se confundan con las teclas del teclado (bajas,
+   grises y con el canto de una tecla). `--reservado` es lo que ocupan cabecera,
+   barra, pista y teclado (el menú ya no ocupa alto: es un desplegable). El alto
+   útil se reparte entre las filas del tablero, descontando huecos y padding, así
+   el tablero nunca empuja el teclado fuera de la ventana. */
+.tablero {
+  --cols: 5;
+  --filas: 6;
+  --hueco: 6px;
+  --ficha: clamp(
+    var(--min-ficha, 34px),
+    min(
+      (min(100vw, 520px) - 32px - (var(--cols) - 1) * var(--hueco)) / var(--cols),
+      (100dvh - var(--reservado, 352px) - (var(--filas) - 1) * var(--hueco) - 12px) / var(--filas)
+    ),
+    80px
+  );
+  display: grid;
+  gap: var(--hueco);
+  padding: 6px 0;
+}
+
+.fila {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--ficha));
+  gap: var(--hueco);
+  justify-content: center;
+}
+
+.ficha {
+  width: var(--ficha);
+  height: var(--ficha);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: calc(var(--ficha) * .52);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--texto);
+  background: var(--fondo-ficha);
+  border: 2px solid var(--borde-ficha);
+  border-radius: 10px;
+  user-select: none;
+  transition: border-color .1s;
+}
+.ficha[data-letra]:not([data-letra='']) { border-color: var(--borde-escrita); }
+.ficha[data-letra][data-estado], .ficha[data-estado] { border-color: transparent; }
+.ficha[data-estado='correcta'] { background: var(--correcta); color: var(--sobre-correcta); }
+.ficha[data-estado='presente'] { background: var(--presente); color: var(--sobre-presente); }
+.ficha[data-estado='ausente'] { background: var(--ausente); color: var(--sobre-ausente); }
+
+.ficha.pop { animation: pop .12s ease-out; }
+.ficha.girando { animation: voltear .5s ease-in-out; }
+.ficha.salto { animation: salto .7s ease-in-out; }
+.fila.sacudir { animation: sacudir .45s; }
+
+@keyframes pop { 50% { transform: scale(1.1); } }
+@keyframes voltear {
+  0% { transform: rotateX(0); }
+  50% { transform: rotateX(-90deg); }
+  100% { transform: rotateX(0); }
+}
+@keyframes salto {
+  0%, 20% { transform: translateY(0); }
+  40% { transform: translateY(-14px); }
+  60% { transform: translateY(4px); }
+  80% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+@keyframes sacudir {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+
+/* ---------- Teclado ---------- */
+/* Teclas bajas, grises y con un canto inferior: se leen como un teclado, no como
+   las casillas del tablero. */
+.teclado { width: 100%; max-width: 500px; display: grid; gap: 6px; margin-top: 4px; margin-bottom: auto; }
+.teclado[data-tipo='numeros'] { max-width: 380px; }
+.teclado__fila { display: flex; gap: 5px; justify-content: center; }
+
+.tecla {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-weight: 600;
+  font-size: .92rem;
+  text-transform: uppercase;
+  color: var(--texto);
+  background: var(--superficie-2);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: inset 0 -3px 0 var(--sombra-tecla);
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: transform .06s, background .25s, color .25s, opacity .25s;
+}
+.tecla:active { transform: scale(.95); }
+.tecla--ancha { flex: 1.6; font-size: .72rem; letter-spacing: .05em; }
+.tecla svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.teclado[data-tipo='numeros'] .tecla { font-size: 1.2rem; }
+.teclado[data-tipo='numeros'] .tecla--ancha { font-size: .8rem; }
+
+.tecla[data-estado='correcta'] { background: var(--correcta); color: var(--sobre-correcta); }
+.tecla[data-estado='presente'] { background: var(--presente); color: var(--sobre-presente); }
+.tecla[data-estado='ausente'] { background: var(--ausente); color: var(--sobre-ausente); opacity: .55; }
+
+/* ---------- Avisos ---------- */
+.avisos {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  pointer-events: none;
+}
+.aviso {
+  padding: 10px 16px;
+  font-size: .88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--fondo);
+  background: var(--texto);
+  border-radius: 8px;
+  box-shadow: var(--sombra);
+  animation: aviso-entra .18s ease-out, aviso-sale .3s 1.5s forwards;
+}
+@keyframes aviso-entra { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes aviso-sale { to { opacity: 0; transform: translateY(-6px); } }
+
+/* Versión nueva: queda a la vista hasta que se actualiza (o hasta salir de la
+   pestaña, donde el actualizador recarga solo). */
+.aviso--version {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 8px 7px 14px;
+  pointer-events: auto;
+  animation: aviso-entra .18s ease-out;
+}
+.aviso--version[hidden] { display: none; }
+.aviso--version .boton { padding: 6px 12px; font-size: .8rem; border-radius: 7px; }
+
+/* ---------- Modales ---------- */
+dialog.modal {
+  position: fixed;
+  width: min(92vw, 440px);
+  max-height: 88dvh;
+  margin: auto;
+  padding: 26px 24px 24px;
+  overflow: auto;
+  color: var(--texto);
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  box-shadow: var(--sombra);
+}
+dialog.modal[open] { animation: modal-entra .2s ease-out; }
+dialog.modal::backdrop { background: rgba(6, 10, 24, .55); backdrop-filter: blur(3px); }
+@keyframes modal-entra { from { opacity: 0; transform: translateY(10px) scale(.98); } }
+
+.modal h2 { margin-right: 32px; font-size: 1.4rem; font-weight: 700; letter-spacing: -.03em; line-height: 1.2; }
+.modal h3 { margin: 22px 0 6px; font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--texto-suave); }
+.modal p { margin-top: 10px; font-size: .93rem; }
+.modal h3 + p { margin-top: 0; }
+.chica { font-size: .8rem !important; color: var(--texto-suave); }
+
+.modal__cerrar { position: absolute; top: 12px; right: 12px; margin: 0; }
+.modal__cerrar button {
+  display: grid; place-items: center;
+  width: 34px; height: 34px; padding: 0;
+  background: none; border: 0; border-radius: 8px;
+  cursor: pointer;
+}
+.modal__cerrar button:hover { background: var(--superficie-2); }
+.modal__cerrar svg { width: 20px; height: 20px; }
+
+.ejemplos { display: grid; gap: 14px; margin: 16px 0 8px; }
+.ejemplo p { margin-top: 6px; font-size: .86rem; }
+.fila-chica { --ficha: 38px; display: flex; gap: 5px; }
+
+/* Estadísticas */
+.numeros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 16px; text-align: center; }
+.numeros b { display: block; font-size: 1.9rem; font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
+.numeros span { display: block; font-size: .62rem; font-weight: 600; letter-spacing: .04em; white-space: nowrap; text-transform: uppercase; color: var(--texto-suave); }
+
+.distribucion { display: grid; gap: 4px; }
+.barra-dist { display: grid; grid-template-columns: 14px 1fr; align-items: center; gap: 8px; font-size: .82rem; font-weight: 600; }
+.barra-dist__relleno {
+  width: max(var(--w, 0%), 28px);
+  padding: 3px 8px;
+  text-align: right;
+  color: var(--sobre-ausente);
+  background: var(--ausente);
+  border-radius: 4px;
+}
+.barra-dist__relleno[data-ultima='true'] { background: var(--correcta); color: var(--sobre-correcta); }
+
+.fila-juego { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--linea); font-size: .88rem; }
+.fila-juego b { font-weight: 600; }
+.fila-juego span { color: var(--texto-suave); }
+
+.fin { margin: 14px 0 4px; padding: 2px 0 2px 14px; border-left: 4px solid var(--acento); }
+.fin__titulo { margin: 0 !important; font-size: 1rem; font-weight: 600; }
+.fin__palabra { margin: 2px 0 0 !important; font-size: 1.8rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; line-height: 1.15; }
+.fin__pista { margin: 6px 0 0 !important; color: var(--texto-suave); }
+.fin__acciones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 22px; }
+.fin__acciones .chica { flex-basis: 100%; margin: 4px 0 0; }
+
+.boton {
+  padding: 11px 18px;
+  font-weight: 600;
+  font-size: .9rem;
+  color: var(--texto);
+  background: transparent;
+  border: 1.5px solid var(--linea);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .15s, transform .08s;
+}
+.boton:hover { background: var(--superficie-2); }
+.boton:active { transform: scale(.97); }
+.boton--primario { color: #2a1c00; background: var(--ambar); border-color: var(--ambar); }
+.boton--primario:hover { background: #f7b445; }
+
+/* Ajustes */
+.ajuste { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid var(--linea); }
+.ajuste:first-of-type { margin-top: 10px; }
+.ajuste--columna { flex-direction: column; align-items: stretch; gap: 10px; }
+.ajuste__texto label { font-weight: 600; font-size: .98rem; }
+.ajuste__texto p { margin: 2px 0 0; font-size: .8rem; color: var(--texto-suave); }
+.ajuste__nota { color: var(--presente) !important; font-weight: 500; }
+
+.interruptor {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  position: relative;
+  width: 46px;
+  height: 26px;
+  margin: 0;
+  background: var(--ausente);
+  border-radius: 99px;
+  cursor: pointer;
+  transition: background .18s;
+}
+.interruptor::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .18s;
+}
+.interruptor:checked { background: var(--correcta); }
+.interruptor:checked::before { transform: translateX(20px); }
+.interruptor:disabled { opacity: .45; cursor: not-allowed; }
+
+.segmentos { display: inline-flex; padding: 3px; background: var(--superficie-2); border-radius: 10px; }
+.segmentos button {
+  padding: 6px 13px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.segmentos button[aria-pressed='true'] { color: var(--texto); background: var(--superficie); box-shadow: 0 1px 3px rgba(0, 0, 0, .18); }
+.segmentos--ancho { display: flex; }
+.segmentos--ancho button { flex: 1; padding: 9px 6px; }
+
+.enlace { padding: 6px 0; font-weight: 600; font-size: .86rem; color: var(--acento); background: none; border: 0; cursor: pointer; }
+.enlace:hover { text-decoration: underline; }
+
+/* ---------- Pantallas bajas y movimiento reducido ---------- */
+@media (max-height: 720px) {
+  .tablero { --reservado: 328px; --min-ficha: 32px; --hueco: 5px; }
+  .cabecera { height: 50px; }
+  .menu__fondo { top: calc(env(safe-area-inset-top) + 50px); }
+  .menu__panel { top: calc(env(safe-area-inset-top) + 56px); }
+  .menu__item { min-height: 44px; }
+  .barra { padding-top: 8px; }
+  .pista { min-height: 2.5em; font-size: .88rem; }
+  .tecla { height: 44px; }
+}
+
+/* ---------- Escritorio ---------- */
+@media (min-width: 960px) {
+  .app {
+    max-width: 1120px;
+    padding: 0 32px max(20px, env(safe-area-inset-bottom));
+  }
+
+  /* Cabecera más aireada y menú desplegable alineado con el contenido. */
+  .cabecera {
+    height: 64px;
+    margin: 0 -32px;
+    padding: env(safe-area-inset-top) 24px 0 32px;
+  }
+  .cabecera__izq { gap: 6px; margin-left: -8px; }
+  .marca__logo { height: 24px; }
+  .acciones { gap: 6px; }
+  .icono { width: 44px; height: 44px; }
+
+  .menu__panel {
+    top: calc(env(safe-area-inset-top) + 72px);
+    left: max(32px, calc(50vw - 560px + 32px));
+    width: min(340px, calc(100vw - 64px));
+  }
+  .menu__fondo { top: calc(env(safe-area-inset-top) + 64px); }
+  .menu__panel::before { left: 18px; }
+  .menu__item { min-height: 52px; padding: 9px 12px; }
+  .menu__nombre { font-size: 1rem; }
+
+  /* Inicio en dos columnas. */
+  .inicio { padding: 36px 0 28px; }
+  .inicio__cabeza {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 32px;
+    align-items: end;
+  }
+  .inicio__fecha { grid-column: 1; }
+  .inicio h1 { grid-column: 1; margin-top: 4px; font-size: 2.6rem; }
+  .progreso { grid-column: 2; grid-row: 2; align-self: center; margin-top: 0; font-size: .95rem; }
+  .constancia { grid-column: 1; margin-top: 8px; font-size: .9rem; }
+  .bits i { width: 18px; height: 18px; }
+
+  .tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+  .tarjeta { padding: 20px 22px 20px 26px; }
+  .tarjeta__nombre { font-size: 1.35rem; }
+
+  .subtitulo { margin: 42px 0 12px; }
+  .proximas { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; }
+  .proximas li { padding: 12px 0; }
+
+  /* Juego: una sola columna centrada. El tablero y el teclado van juntos y las
+     fichas escalan con el alto de la ventana (clamp + dvh) para que nunca
+     queden cortadas ni toquen el borde. */
+  .juego { max-width: 560px; margin: 0 auto; }
+
+  .barra { padding: 16px 0 6px; }
+  .barra h1 { font-size: 1.45rem; }
+  .barra p { margin-top: 2px; font-size: .8rem; }
+
+  .pista { font-size: 1rem; }
+
+  .tablero {
+    --hueco: clamp(5px, .8dvh, 8px);
+    --reservado: 384px;
+    --min-ficha: 18px;
+    --ficha: clamp(
+      var(--min-ficha),
+      min(
+        (min(100vw - 64px, 560px) - (var(--cols) - 1) * var(--hueco)) / var(--cols),
+        (100dvh - var(--reservado) - (var(--filas) - 1) * var(--hueco) - 12px) / var(--filas)
+      ),
+      80px
+    );
+  }
+
+  .teclado {
+    gap: 7px;
+    margin-top: 10px;
+    max-width: 500px;
+  }
+  .teclado[data-tipo='numeros'] { max-width: 400px; }
+  .tecla { height: 46px; font-size: .95rem; }
+  .teclado[data-tipo='numeros'] .tecla { font-size: 1.25rem; }
+
+  .avisos { top: 92px; }
+
+  dialog.modal { width: min(88vw, 480px); padding: 30px 28px 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
+}

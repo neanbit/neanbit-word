@@ -1,0 +1,11 @@
+{
+  "name": "neanbit-word",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "sello": "node tools/sello.mjs",
+    "pretest": "node tools/sello.mjs --check",
+    "test": "node --test"
+  }
+}

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es-AR" data-tema="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>neanbit · Palabras</title>
+  <meta name="description" content="Una palabra por día en varias versiones: clásico, argentino, fútbol y fechas.">
+  <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a1022" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="neanbit · Palabras">
+  <meta property="og:description" content="Una palabra por día en varias versiones.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="app">
+
+    <header class="cabecera">
+      <div class="cabecera__izq">
+        <button class="icono icono--menu" id="btn-menu" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-panel">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path class="icono__barra" d="M4.5 7h15"/>
+            <path class="icono__barra" d="M4.5 12h15"/>
+            <path class="icono__barra" d="M4.5 17h15"/>
+          </svg>
+        </button>
+        <a class="marca" href="/" data-link aria-label="neanbit, ir al inicio">
+        <svg class="marca__logo" viewBox="180 153.53 1415.15 282.69" width="110" height="22" aria-hidden="true" focusable="false">
+          <g transform="translate(180.00 432.98)">
+            <path d="M0 0V-177.23H43.57A110.89 110.89 0 0 1 221.78 -89.11V-69.31H166.34V-89.11A55.45 55.45 0 0 0 55.45 -89.11V0Z" fill="currentColor"/>
+            <rect x="166.34" y="-55.45" width="55.45" height="55.45" fill="#FCA311"/>
+            <path d="M464.53 -84.58H311.76Q313.57 -60.63 329.54 -46.11Q345.50 -31.60 368.73 -31.60Q402.12 -31.60 415.90 -59.54H460.54Q451.47 -31.96 427.70 -14.36Q403.93 3.24 368.73 3.24Q340.06 3.24 317.38 -9.64Q294.70 -22.52 281.82 -45.93Q268.94 -69.34 268.94 -100.18Q268.94 -131.03 281.45 -154.43Q293.97 -177.84 316.65 -190.54Q339.34 -203.24 368.73 -203.24Q397.03 -203.24 419.17 -190.90Q441.31 -178.57 453.65 -156.25Q465.98 -133.93 465.98 -104.90Q465.98 -93.65 464.53 -84.58ZM422.80 -117.96Q422.44 -140.82 406.47 -154.61Q390.50 -168.40 366.92 -168.40Q345.50 -168.40 330.26 -154.80Q315.02 -141.19 312.12 -117.96ZM584.84 -203.24Q608.42 -203.24 626.02 -193.99Q643.62 -184.73 654.15 -170.94V-199.98H695.88V-0.02H654.15V-29.78Q643.62 -15.63 625.48 -6.19Q607.34 3.24 584.11 3.24Q558.35 3.24 536.94 -10.00Q515.53 -23.25 503.01 -47.02Q490.49 -70.79 490.49 -100.91Q490.49 -131.03 503.01 -154.25Q515.53 -177.48 537.12 -190.36Q558.71 -203.24 584.84 -203.24ZM593.55 -167.32Q577.58 -167.32 563.79 -159.51Q550.00 -151.71 541.47 -136.65Q532.94 -121.59 532.94 -100.91Q532.94 -80.22 541.47 -64.62Q550.00 -49.01 563.97 -40.85Q577.94 -32.68 593.55 -32.68Q609.51 -32.68 623.30 -40.67Q637.09 -48.65 645.62 -64.07Q654.15 -79.50 654.15 -100.18Q654.15 -120.87 645.62 -136.11Q637.09 -151.35 623.30 -159.33Q609.51 -167.32 593.55 -167.32ZM930.86 -117.96V-0.02H889.85V-111.79Q889.85 -138.65 876.42 -152.98Q863.00 -167.32 839.77 -167.32Q816.55 -167.32 802.94 -152.98Q789.33 -138.65 789.33 -111.79V-0.02H747.96V-199.98H789.33V-177.11Q799.49 -189.45 815.28 -196.35Q831.06 -203.24 848.85 -203.24Q872.43 -203.24 891.12 -193.44Q909.81 -183.65 920.33 -164.41Q930.86 -145.18 930.86 -117.96ZM1092.17 -203.24Q1118.66 -203.24 1140.07 -190.54Q1161.48 -177.84 1173.82 -154.43Q1186.16 -131.03 1186.16 -100.91Q1186.16 -70.79 1173.82 -47.02Q1161.48 -23.25 1139.89 -10.00Q1118.30 3.24 1092.17 3.24Q1068.94 3.24 1050.98 -5.83Q1033.02 -14.90 1022.49 -29.06V-0.02H981.13V-268.56H1022.49V-170.22Q1033.02 -184.73 1051.34 -193.99Q1069.67 -203.24 1092.17 -203.24ZM1083.10 -167.32Q1067.49 -167.32 1053.52 -159.33Q1039.55 -151.35 1031.02 -136.11Q1022.49 -120.87 1022.49 -100.18Q1022.49 -79.50 1031.02 -64.07Q1039.55 -48.65 1053.52 -40.67Q1067.49 -32.68 1083.10 -32.68Q1099.06 -32.68 1113.04 -40.85Q1127.01 -49.01 1135.53 -64.62Q1144.06 -80.22 1144.06 -100.91Q1144.06 -121.59 1135.53 -136.65Q1127.01 -151.71 1113.04 -159.51Q1099.06 -167.32 1083.10 -167.32ZM1219.37 -252.96Q1219.37 -264.21 1226.99 -271.83Q1234.61 -279.45 1245.86 -279.45Q1256.75 -279.45 1264.37 -271.83Q1271.99 -264.21 1271.99 -252.96Q1271.99 -241.71 1264.37 -234.09Q1256.75 -226.47 1245.86 -226.47Q1234.61 -226.47 1226.99 -234.09Q1219.37 -241.71 1219.37 -252.96ZM1266.18 -199.98V-0.02H1224.81V-199.98ZM1366.53 -166.23V-55.55Q1366.53 -44.30 1371.79 -39.40Q1377.05 -34.50 1389.75 -34.50H1415.15V-0.02H1382.49Q1354.55 -0.02 1339.67 -13.09Q1324.80 -26.15 1324.80 -55.55V-166.23H1301.21V-199.98H1324.80V-249.69H1366.53V-199.98H1415.15V-166.23Z" fill="currentColor"/>
+          </g>
+        </svg>
+        </a>
+      </div>
+      <div class="acciones">
+        <button class="icono" id="btn-stats" type="button" aria-label="Estadísticas">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>
+        </button>
+        <button class="icono" id="btn-ayuda" type="button" aria-label="Cómo se juega">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.6 2.6 0 1 1 3.6 2.4c-.7.4-1.1.9-1.1 1.6M12 17h.01"/></svg>
+        </button>
+        <button class="icono" id="btn-ajustes" type="button" aria-label="Ajustes">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Menú de juegos: un panel que baja del botón, con el estado de hoy de cada uno.
+         Va fuera de <main> para quedar por encima de todo; cerrado no recibe foco. -->
+    <div class="menu" id="menu" data-abierto="false">
+      <div class="menu__fondo" id="menu-fondo"></div>
+      <nav class="menu__panel" id="menu-panel" aria-label="Juegos" inert>
+        <p class="menu__rotulo">Juegos</p>
+        <div class="menu__lista" id="menu-lista"></div>
+      </nav>
+    </div>
+
+    <main>
+      <!-- Inicio -->
+      <section class="inicio" id="vista-inicio" hidden>
+        <div class="inicio__cabeza">
+          <p class="inicio__fecha" id="inicio-fecha"></p>
+          <h1>Los de hoy</h1>
+          <div class="progreso">
+            <div class="bits" id="inicio-bits" aria-hidden="true"></div>
+            <span id="inicio-progreso"></span>
+          </div>
+          <p class="constancia" id="inicio-constancia"></p>
+        </div>
+        <div class="tarjetas" id="tarjetas"></div>
+        <h2 class="subtitulo">Próximamente</h2>
+        <ul class="proximas" id="lista-proximas"></ul>
+      </section>
+
+      <!-- Juego -->
+      <section class="juego" id="vista-juego" hidden>
+        <div class="barra">
+          <div class="barra__titulo">
+            <h1 id="juego-titulo"></h1>
+            <p id="juego-sub"></p>
+          </div>
+        </div>
+
+        <p class="pista" id="pista" aria-live="polite"></p>
+        <div class="tablero" id="tablero" role="grid" aria-label="Tablero"></div>
+        <div class="teclado" id="teclado" aria-label="Teclado en pantalla"></div>
+      </section>
+    </main>
+
+    <div class="avisos" id="avisos" aria-live="assertive">
+      <div class="aviso aviso--version" id="aviso-version" role="status" hidden>
+        <span>Hay una versión nueva</span>
+        <button class="boton boton--primario" id="btn-actualizar" type="button">Actualizar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ayuda -->
+  <dialog id="dlg-ayuda" class="modal">
+    <form method="dialog" class="modal__cerrar"><button aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></form>
+    <h2>Cómo se juega</h2>
+    <p>Adiviná la respuesta en la cantidad de intentos que indica el tablero. Cada intento tiene que llenar todas las casillas, y al enviarlo las fichas cambian de color.</p>
+    <div class="ejemplos">
+      <div class="ejemplo">
+        <div class="fila-chica"><span class="ficha" data-letra="C" data-estado="correcta">C</span><span class="ficha" data-letra="I">I</span><span class="ficha" data-letra="N">N</span><span class="ficha" data-letra="C">C</span><span class="ficha" data-letra="O">O</span></div>
+        <p>La <b>C</b> está en la respuesta y en ese mismo lugar.</p>
+      </div>
+      <div class="ejemplo">
+        <div class="fila-chica"><span class="ficha">P</span><span class="ficha" data-letra="L" data-estado="presente">L</span><span class="ficha">A</span><span class="ficha">Y</span><span class="ficha">A</span></div>
+        <p>La <b>L</b> está, pero en otro lugar.</p>
+      </div>
+      <div class="ejemplo">
+        <div class="fila-chica"><span class="ficha">V</span><span class="ficha">I</span><span class="ficha">D</span><span class="ficha">A</span><span class="ficha" data-letra="S" data-estado="ausente">S</span></div>
+        <p>La <b>S</b> no está en ningún lado.</p>
+      </div>
+    </div>
+    <p class="chica">Las letras repetidas solo se marcan tantas veces como aparecen en la respuesta. Las tildes no hacen falta; la Ñ sí.</p>
+    <h3>Del día o libre</h3>
+    <p>“Del día” es la misma respuesta para todos y suma a tus estadísticas y a tu constancia. “Libre” es práctica sin límite y no toca tu racha.</p>
+    <h3>Juegos</h3>
+    <p>Cada pestaña tiene su propia respuesta, su teclado y sus estadísticas. En el inicio ves cuáles te faltan hoy.</p>
+  </dialog>
+
+  <!-- Estadísticas y fin de partida -->
+  <dialog id="dlg-stats" class="modal">
+    <form method="dialog" class="modal__cerrar"><button aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></form>
+    <h2 id="stats-titulo">Estadísticas</h2>
+    <section id="fin" class="fin" hidden>
+      <p class="fin__titulo" id="fin-titulo"></p>
+      <p class="fin__palabra" id="fin-palabra"></p>
+      <p class="fin__pista" id="fin-pista"></p>
+    </section>
+    <div class="numeros" id="stats-numeros"></div>
+    <p class="chica" id="stats-constancia"></p>
+    <h3 id="stats-subtitulo">Distribución de intentos</h3>
+    <div class="distribucion" id="stats-dist"></div>
+    <div class="fin__acciones" id="fin-acciones" hidden>
+      <button class="boton boton--primario" id="btn-compartir" type="button">Compartir</button>
+      <button class="boton" id="btn-otra" type="button">Otra palabra</button>
+      <p class="chica" id="fin-cuenta"></p>
+    </div>
+  </dialog>
+
+  <!-- Ajustes -->
+  <dialog id="dlg-ajustes" class="modal">
+    <form method="dialog" class="modal__cerrar"><button aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></form>
+    <h2>Ajustes</h2>
+
+    <div class="ajuste">
+      <div class="ajuste__texto">
+        <label for="aj-dificil">Modo difícil</label>
+        <p>Las pistas descubiertas hay que usarlas en los intentos siguientes.</p>
+        <p class="ajuste__nota" id="nota-dificil" hidden>Solo se puede activar al empezar una partida.</p>
+      </div>
+      <input class="interruptor" id="aj-dificil" type="checkbox" role="switch">
+    </div>
+
+    <div class="ajuste">
+      <div class="ajuste__texto">
+        <label for="aj-estricto">Solo palabras que existen</label>
+        <p>Se rechazan los intentos que no estén en el diccionario.</p>
+        <p class="ajuste__nota" id="nota-estricto" hidden>Este juego no usa diccionario, así que no cambia nada.</p>
+      </div>
+      <input class="interruptor" id="aj-estricto" type="checkbox" role="switch">
+    </div>
+
+    <div class="ajuste">
+      <div class="ajuste__texto">
+        <label for="aj-contraste">Alto contraste</label>
+        <p>Naranja y azul en lugar de verde y amarillo. Ayuda con el daltonismo.</p>
+      </div>
+      <input class="interruptor" id="aj-contraste" type="checkbox" role="switch">
+    </div>
+
+    <div class="ajuste ajuste--columna">
+      <div class="ajuste__texto"><label id="et-tema">Tema</label></div>
+      <div class="segmentos segmentos--ancho" role="group" aria-labelledby="et-tema" id="seg-tema">
+        <button type="button" data-tema="auto">Automático</button>
+        <button type="button" data-tema="claro">Claro</button>
+        <button type="button" data-tema="oscuro">Oscuro</button>
+      </div>
+    </div>
+
+    <div class="ajuste ajuste--columna">
+      <div class="ajuste__texto">
+        <label id="et-partida">Partida</label>
+        <p>La del día suma a tus estadísticas. La libre es práctica.</p>
+      </div>
+      <div class="segmentos segmentos--ancho" role="group" aria-labelledby="et-partida" id="seg-partida-aj">
+        <button type="button" data-partida="diaria">Del día</button>
+        <button type="button" data-partida="libre">Libre</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

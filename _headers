@@ -1,0 +1,27 @@
+# Cloudflare Pages sirve los estáticos con `max-age=14400`: durante 4 horas el
+# navegador puede usar una copia vieja sin preguntar. Los archivos no llevan hash
+# en el nombre, así que se revalida siempre y el ETag devuelve un 304 barato.
+#
+# El HTML ya sale con `max-age=0, must-revalidate` por defecto; las reglas de
+# acá cubren el resto de lo que carga la app.
+
+/js/*
+  Cache-Control: no-cache
+
+/css/*
+  Cache-Control: no-cache
+
+# Los íconos y el logo tampoco llevan hash en el nombre: si cambian, tienen que
+# llegar en la próxima visita y no cuatro horas después.
+/assets/*
+  Cache-Control: no-cache
+
+/sw.js
+  Cache-Control: no-cache
+
+/manifest.webmanifest
+  Cache-Control: no-cache
+
+# Lo consulta el actualizador: nunca puede venir de una caché.
+/version.json
+  Cache-Control: no-store
