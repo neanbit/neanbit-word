@@ -38,5 +38,29 @@ test('el clásico no repite el enunciado en partida', () => {
 
 test('al terminar la del día se puede seguir en libre desde el cartel', () => {
   assert.match(app, /'Continuar jugando libre'/, 'el fin de partida ofrece seguir en libre');
-  assert.match(app, /cambiarAjuste\('partida', 'libre'\)/, 'y arranca la partida libre');
+
+  // El botón no pisa el ajuste elegido a mano: cerrar el cartel deja el modo en
+  // libre por el resto del día y arranca la palabra nueva.
+  assert.doesNotMatch(app, /cambiarAjuste\('partida', 'libre'\)/, 'seguir en libre no cambia el ajuste');
+  assert.match(app, /libreAuto\.guardar\(ui\.modo\.id, diaLocal\(\)\)/, 'el modo queda en libre hasta el día siguiente');
+  assert.match(app, /continuarAlCerrarResultado/, 'cerrar el cartel de la diaria arranca la libre');
+  assert.match(
+    app,
+    /addEventListener\('close', \(\) => \{[\s\S]*continuarAlCerrarResultado\(\)/,
+    'se dispara al cerrar la ventana de fin, sin tocar ningún botón',
+  );
+
+  // La salida automática vence al cambiar el día: la diaria vuelve a estar
+  // disponible y el modo abre en "Del día".
+  assert.match(app, /libreAuto\.cargar\(modoId\) === diaLocal\(\)/, 'el libre automático caduca al día siguiente');
+});
+
+test('el fin de partida pone la acción de seguir jugando arriba y ancha', () => {
+  const acciones = html.match(/<div class="fin__acciones"[\s\S]*?<\/div>/)?.[0] ?? '';
+  const otra = acciones.indexOf('id="btn-otra"');
+  const compartir = acciones.indexOf('id="btn-compartir"');
+  assert.ok(otra > -1 && compartir > -1, 'el cartel tiene las dos acciones');
+  assert.ok(otra < compartir, 'Continuar jugando libre va antes que Compartir');
+  assert.match(css, /\.fin__acciones \.boton \{[^}]*width: 100%/, 'los botones ocupan el ancho del cartel');
+  assert.match(css, /\.fin__acciones \.boton \{[^}]*min-height: 48px/, 'y tienen alto de toque cómodo');
 });

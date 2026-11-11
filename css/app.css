@@ -17,6 +17,8 @@
   --borde-escrita: #7c88a6;
   --fondo-ficha: #ffffff;      /* relleno de las casillas del tablero */
   --sombra-tecla: rgba(14, 26, 56, .16);
+  --tecla-ausente: #545d78;    /* tecla ya probada y descartada: gris fuerte */
+  --sobre-tecla-ausente: #f4f6fb;
 
   --correcta: #1f9d6a;
   --presente: #f5a524;
@@ -46,6 +48,8 @@
   --borde-escrita: #66739b;
   --fondo-ficha: #16203c;
   --sombra-tecla: rgba(0, 0, 0, .5);
+  --tecla-ausente: #48516f;    /* más clara que la tecla sin probar, para que se note */
+  --sobre-tecla-ausente: #e7ebf5;
   --correcta: #23a873;
   --ausente: #333e63;
   --sombra: 0 12px 40px rgba(0, 0, 0, .55);
@@ -66,6 +70,8 @@
     --borde-escrita: #66739b;
     --fondo-ficha: #16203c;
     --sombra-tecla: rgba(0, 0, 0, .5);
+    --tecla-ausente: #48516f;
+    --sobre-tecla-ausente: #e7ebf5;
     --correcta: #23a873;
     --ausente: #333e63;
     --sombra: 0 12px 40px rgba(0, 0, 0, .55);
@@ -533,7 +539,7 @@ main { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 
 .tecla[data-estado='correcta'] { background: var(--correcta); color: var(--sobre-correcta); }
 .tecla[data-estado='presente'] { background: var(--presente); color: var(--sobre-presente); }
-.tecla[data-estado='ausente'] { background: var(--ausente); color: var(--sobre-ausente); opacity: .55; }
+.tecla[data-estado='ausente'] { background: var(--tecla-ausente); color: var(--sobre-tecla-ausente); }
 
 /* ---------- Avisos ---------- */
 .avisos {
@@ -637,8 +643,12 @@ dialog.modal::backdrop { background: rgba(6, 10, 24, .55); backdrop-filter: blur
 .fin__titulo { margin: 0 !important; font-size: 1rem; font-weight: 600; }
 .fin__palabra { margin: 2px 0 0 !important; font-size: 1.8rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; line-height: 1.15; }
 .fin__pista { margin: 6px 0 0 !important; color: var(--texto-suave); }
-.fin__acciones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 22px; }
-.fin__acciones .chica { flex-basis: 100%; margin: 4px 0 0; }
+/* El fin de partida lleva una sola acción ancha arriba (la que sigue jugando) y
+   el resto debajo, para que el botón principal no quede chico ni perdido al
+   costado de Compartir. */
+.fin__acciones { display: grid; gap: 8px; margin-top: 22px; }
+.fin__acciones .boton { width: 100%; min-height: 48px; padding: 12px 18px; }
+.fin__acciones .chica { margin: 4px 0 0; text-align: center; }
 
 .boton {
   padding: 11px 18px;

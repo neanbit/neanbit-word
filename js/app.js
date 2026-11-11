@@ -11,7 +11,7 @@ import {
   ESTADO, normalizar, evaluar, estadosTeclado, diaLocal, indiceDelDia, numeroDelDia,
   validarDificil, actualizarConstancia, constanciaVigente, rachaVigente,
 } from './engine.js';
-import { ajustes as almacenAjustes, partidas, estadisticas, constancia, claveVisto } from './store.js';
+import { ajustes as almacenAjustes, partidas, estadisticas, constancia, libreAuto, claveVisto } from './store.js';
 import { MODOS, obtenerModo } from './modes/index.js';
 import { PROXIMAMENTE } from './modes/proximamente.js';
 import { vigilarActualizaciones } from './actualizador.js';
@@ -65,11 +65,26 @@ const el = {
 /* ==========================================================================
    Ajustes
    ========================================================================== */
+/* El tipo de partida sale del ajuste elegido a mano (Del día/Libre) y, además,
+   de la salida automática a libre de ese modo: terminada la diaria y cerrado el
+   cartel, el modo sigue en libre el resto del día. Al día siguiente el registro
+   vence solo y la diaria vuelve a estar disponible. */
+function tipoDePartida(modoId) {
+  if (!modoId) return ui.ajustes.partida;
+  if (ui.ajustes.partida === 'libre') return 'libre';
+  return libreAuto.cargar(modoId) === diaLocal() ? 'libre' : 'diaria';
+}
+
+function refrescarTipo() {
+  ui.tipo = tipoDePartida(ui.modo?.id);
+  return ui.tipo;
+}
+
 function aplicarAjustes() {
   const raiz = document.documentElement;
   raiz.dataset.tema = ui.ajustes.tema;
   raiz.dataset.contraste = String(ui.ajustes.contraste);
-  ui.tipo = ui.ajustes.partida;
+  refrescarTipo();
 
   $('#aj-estricto').checked = ui.ajustes.estricto;
   $('#aj-contraste').checked = ui.ajustes.contraste;
@@ -93,6 +108,8 @@ function marcarSegmento(selector, atributo, valor) {
 function cambiarAjuste(clave, valor) {
   ui.ajustes = { ...ui.ajustes, [clave]: valor };
   almacenAjustes.guardar(ui.ajustes);
+  // Elegir Del día o Libre a mano manda sobre la salida automática de los modos.
+  if (clave === 'partida') MODOS.forEach((m) => libreAuto.borrar(m.id));
   aplicarAjustes();
   if (clave === 'partida' && ui.vista === 'juego') iniciarPartida();
 }
@@ -303,6 +320,7 @@ function renderInicio() {
 function activarModo(id) {
   ui.vista = 'juego';
   ui.modo = obtenerModo(id);
+  refrescarTipo();
   document.documentElement.style.setProperty('--acento', ui.modo.acento);
   document.title = `${ui.modo.nombre} · ${MARCA.nombre}`;
   el.inicio.hidden = true;
@@ -676,6 +694,18 @@ function abrirResultado() {
   abrir('#dlg-stats');
 }
 
+/* Cerrado el cartel del fin, la pantalla no se queda en el resultado: si era la
+   del día, el modo sigue en libre y arranca una palabra nueva. El registro vale
+   solo para el día de hoy, así que mañana el mismo modo abre en "Del día". */
+function continuarAlCerrarResultado() {
+  if (ui.vista !== 'juego' || !ui.modo || !ui.partida) return;
+  if (ui.partida.resultado === 'jugando') return; // era la ventana de estadísticas
+  if (ui.tipo !== 'diaria') return;               // la libre ya ofrece "Otra palabra"
+  libreAuto.guardar(ui.modo.id, diaLocal());
+  refrescarTipo();
+  iniciarPartida({ forzarNueva: true });
+}
+
 function tiempoHastaManana() {
   const ahora = new Date();
   const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
@@ -842,7 +872,10 @@ function iniciar() {
     d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
     d.addEventListener('close', () => setTimeout(() => document.activeElement?.blur?.(), 0));
   });
-  $('#dlg-stats').addEventListener('close', () => clearInterval(ui.cuenta));
+  $('#dlg-stats').addEventListener('close', () => {
+    clearInterval(ui.cuenta);
+    continuarAlCerrarResultado();
+  });
 
   // Ajustes
   $('#aj-dificil').addEventListener('change', (e) => cambiarAjuste('dificil', e.target.checked));
@@ -865,9 +898,12 @@ function iniciar() {
   el.sub.addEventListener('click', (e) => { if (e.target.closest('[data-otra]')) iniciarPartida({ forzarNueva: true }); });
   $('#btn-compartir').addEventListener('click', compartir);
   $('#btn-otra').addEventListener('click', () => {
+    // En la diaria, cerrar el cartel ya deja el modo en libre y arranca la
+    // palabra nueva (continuarAlCerrarResultado). En libre, "Otra palabra" es
+    // esta misma acción.
+    const enLibre = ui.tipo !== 'diaria';
     $('#dlg-stats').close();
-    if (ui.tipo !== 'libre') cambiarAjuste('partida', 'libre');
-    iniciarPartida({ forzarNueva: true });
+    if (enLibre) iniciarPartida({ forzarNueva: true });
   });
 
   // Ruta
@@ -876,11 +912,17 @@ function iniciar() {
   document.addEventListener('keydown', alApretarTecla);
   mostrarRuta();
 
-  // Si la pestaña sigue abierta pasada la medianoche, se renueva lo del día.
+  // Si la pestaña sigue abierta pasada la medianoche, se renueva lo del día:
+  // el modo que venía en libre por haber terminado la diaria vuelve a "Del día".
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return;
-    if (ui.vista === 'inicio') renderInicio();
-    else if (ui.tipo === 'diaria' && ui.partida.dia !== diaLocal()) iniciarPartida();
+    if (ui.vista === 'inicio') {
+      renderInicio();
+    } else {
+      const antes = ui.tipo;
+      const ahora = refrescarTipo();
+      if (ahora !== antes || (ahora === 'diaria' && ui.partida.dia !== diaLocal())) iniciarPartida();
+    }
     renderNav();
   });
 

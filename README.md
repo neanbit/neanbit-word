@@ -27,7 +27,11 @@ estadísticas y las rutas son compartidos.
 - Los ajustes (tema, alto contraste, modo difícil, palabras que existen, partida
   del día o libre) valen para todos los juegos. El tipo de partida se cambia solo
   ahí: la vista de juego no repite el selector. Al terminar la del día, el cartel
-  de fin ofrece continuar en libre sin pasar por ajustes.
+  de fin ofrece continuar en libre; además, al cerrarlo (con el botón, con la X,
+  con Escape o tocando afuera) ese juego sigue solo en libre y arranca una
+  palabra nueva, aunque no se toque nada. El cambio vale para ese juego y ese
+  día: al día siguiente, o al elegir Del día en ajustes, vuelve a la palabra del
+  día. Cambiar de juego no arrastra el libre.
 - La interfaz se adapta: desde 960 px el inicio usa dos columnas de tarjetas y el
   juego (barra, pista, tablero y teclado) queda en una sola columna centrada. Las
   fichas escalan con el ancho y el alto de la ventana (`clamp()` y `dvh`) para que

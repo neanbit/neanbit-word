@@ -45,6 +45,18 @@ export const partidas = {
   },
 };
 
+/* ---- Salida a libre automática, una por modo y día ----
+   Guarda el día en que la diaria se terminó y el jugador siguió en libre. Vale
+   solo para ese día: al día siguiente la diaria vuelve a estar disponible y el
+   modo arranca en "Del día" sin tocar el ajuste elegido a mano. */
+export const libreAuto = {
+  cargar: (modoId) => leer(`libre:${modoId}`, 0),
+  guardar: (modoId, dia) => escribir(`libre:${modoId}`, dia),
+  borrar: (modoId) => {
+    try { localStorage.removeItem(`${PREFIJO}libre:${modoId}`); } catch { /* noop */ }
+  },
+};
+
 /* ---- Estadísticas, una por modo ---- */
 const statsVacias = (intentos) => ({
   jugadas: 0,
