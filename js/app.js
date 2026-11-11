@@ -247,7 +247,7 @@ function mostrarInicio() {
   clearInterval(ui.cuenta);
   ui.vista = 'inicio';
   ui.modo = null;
-  document.title = `${MARCA.nombre} · Palabras`;
+  document.title = `${MARCA.nombre} ▪ word`;
   document.documentElement.style.setProperty('--acento', '#6c8cff');
   el.juego.hidden = true;
   el.inicio.hidden = false;
