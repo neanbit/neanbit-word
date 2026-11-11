@@ -6,9 +6,9 @@
 const PREFIJO = 'nbw:v1:';
 
 const AJUSTES_BASE = Object.freeze({
-  estricto: true,      // solo palabras que existen
+  estricto: false,     // solo palabras que existen
   dificil: false,      // obliga a reutilizar las pistas
-  tema: 'auto',        // 'auto' | 'claro' | 'oscuro'
+  tema: 'oscuro',      // 'auto' | 'claro' | 'oscuro'
   contraste: false,    // paleta alternativa (daltonismo)
   partida: 'diaria',   // 'diaria' | 'libre'
 });
